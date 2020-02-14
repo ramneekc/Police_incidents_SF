@@ -1,8 +1,8 @@
-// d3.json("/leaflet").then(data => {
-//     console.log("this is app.js");
-//     console.log(data);
-//     createFeatures(data)
-// })
+d3.json("/leaflet").then(data => {
+    console.log("this is app.js");
+    console.log(data);
+    // createFeatures(data)
+})
 
 // var markers = [];
 
@@ -77,4 +77,6 @@ L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     id: "mapbox.streets",
     accessToken: API_KEY
 }).addTo(myMap);
-console.log(myMap);
+// console.log(myMap);
+
+console.log("dfsdfdS")
