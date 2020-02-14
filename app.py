@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import pandas as pd
 import numpy as np
@@ -5,8 +6,7 @@ import pymongo
 from flask import Flask, jsonify, render_template
 from bson.json_util import dumps, loads
 import json
-
-
+import requests
 
 app = Flask(__name__)
 
@@ -21,19 +21,20 @@ collection = database['Incidents']
 
 @app.route('/')
 def index():
-    print("hello")
     return render_template('index.html')
 
 @app.route('/leaflet')
 def leaflet():
     data = dumps(collection.find())
-#     data = loads(dumps(collection.find_one()))
-    print("hello leaflet")
-    # print(data)
-#     data = collection.find_one()
-#     print(data)
     return data
-    # return render_template('index.html', data=data)
+
+@app.route('/dist_plots')
+def dist_plots():
+    # response = requests.get("https://data.sfgov.org/resource/evfd-nvbj.json")
+    link  = "static/Historical_Police_Department_Reporting_Plots.geojson"
+    with open(link) as json_file:
+        data1 = json.load(json_file)
+    return data1
 
 if __name__ == "__main__":
     app.run()

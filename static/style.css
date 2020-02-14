@@ -3,13 +3,18 @@ body {
   padding: 0;
   margin: 0;
 }
-
+/* #map1{
+  height: 400px;
+} */
 /* set map, body, and html to 100% of the screen size */
-#map1,
+/* #map1, */
 body,
 html {
   height: 100%;
 }
+h1 {width: auto;
+    height: auto;}
+
 
 /* .legend {
   padding: 6px 8px;
