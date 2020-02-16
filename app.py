@@ -28,13 +28,19 @@ def leaflet():
     data = dumps(collection.find())
     return data
 
-@app.route('/dist_plots')
-def dist_plots():
-    # response = requests.get("https://data.sfgov.org/resource/evfd-nvbj.json")
-    link  = "static/Historical_Police_Department_Reporting_Plots.geojson"
+@app.route('/geojson')
+def geojson():
+    link  = "static/Police_Department_Incident_Reports_ 2018_to_Present.geojson"
     with open(link) as json_file:
         data1 = json.load(json_file)
     return data1
+
+@app.route('/districts')
+def districts():
+    link  = "static/Current_Police_Districts.geojson"
+    with open(link) as json_file:
+        data2 = json.load(json_file)
+    return data2    
 
 if __name__ == "__main__":
     app.run()
