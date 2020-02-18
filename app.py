@@ -1,12 +1,9 @@
 from __future__ import print_function
-import os
-import pandas as pd
-import numpy as np
 import pymongo
-from flask import Flask, jsonify, render_template
+import pandas as pd
+from flask import Flask, jsonify, render_template, request
 from bson.json_util import dumps, loads
 import json
-import requests
 
 app = Flask(__name__)
 
@@ -28,6 +25,13 @@ def leaflet():
     data = dumps(collection.find())
     return data
 
+@app.route('/names')
+def search():
+    data0 = collection.find()
+    df =  pd.DataFrame(list(data0))
+    df1 = df['Police_Dist'].unique()
+    return jsonify(list(df1))
+
 @app.route('/geojson')
 def geojson():
     link  = "static/Police_Department_Incident_Reports_ 2018_to_Present.geojson"
@@ -41,6 +45,11 @@ def districts():
     with open(link) as json_file:
         data2 = json.load(json_file)
     return data2    
+
+@app.route('/samples/<newSample>')
+def samples(newSample):
+    data3 = dumps(collection.find({"Police_Dist": newSample}))
+    return data3
 
 if __name__ == "__main__":
     app.run()
