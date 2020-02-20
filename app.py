@@ -32,12 +32,12 @@ def search():
     df1 = df['Police_Dist'].unique()
     return jsonify(list(df1))
 
-@app.route('/geojson')
-def geojson():
-    link  = "static/Police_Department_Incident_Reports_ 2018_to_Present.geojson"
-    with open(link) as json_file:
-        data1 = json.load(json_file)
-    return data1
+# @app.route('/geojson')
+# def geojson():
+#     link  = "static/Police_Department_Incident_Reports_ 2018_to_Present.geojson"
+#     with open(link) as json_file:
+#         data1 = json.load(json_file)
+#     return data1
 
 @app.route('/districts')
 def districts():
@@ -50,6 +50,18 @@ def districts():
 def samples(newSample):
     data3 = dumps(collection.find({"Police_Dist": newSample}))
     return data3
+
+@app.route('/category_names')
+def search2():
+    data0 = collection.find()
+    df =  pd.DataFrame(list(data0))
+    df1 = df['Category'].unique()
+    return jsonify(list(df1))
+
+@app.route('/categories/<newCategories>')
+def samples2(newCategories):
+    data4 = dumps(collection.find({"Category": newCategories}))
+    return data4
 
 if __name__ == "__main__":
     app.run()
