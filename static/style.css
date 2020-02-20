@@ -17,3 +17,11 @@ h4 {
   font-family: 'Lucida Sans';
 }
 
+.jumbotron {
+  background-image: url("banner.jpg");
+  background-size: cover;
+  background-position: center;
+  color: yellow;
+  text-align:right;
+}
+
