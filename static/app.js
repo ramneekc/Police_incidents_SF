@@ -1,6 +1,8 @@
 var myMap = L.map("map1", {
   center: [37.7749, -122.4194],
-  zoom: 13
+  zoom: 13,
+  maxZoom: 16,
+  minZoom: 12
 });
 
 var run_bike_hike = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -47,8 +49,7 @@ function chooseColor(dist) {
   }
 }
 
-function createMap(markers, Prostitution, Counterfeiting, Drug_offense, districs) {
-
+function createMap(allmarkers, districs) {
   var pirates = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
     maxZoom: 18,
@@ -77,11 +78,18 @@ function createMap(markers, Prostitution, Counterfeiting, Drug_offense, districs
     Emerald: emerald
   };
 
+  // var overlayMaps = {
+  //   "Incidents": markers,
+  //   "Prostitution": Prostitution,
+  //   "Counterfeiting": Counterfeiting,
+  //   "Drug Offense": Drug_offense,
+  //   "Districts": districs,
+  //   "Burglary": Burglary,
+  //   "Vehicle theft": Vehicle_Theft,
+  //   "Missing Person": Missing_Person
+  // };
   var overlayMaps = {
-    "Incidents": markers,
-    "Prostitution": Prostitution,
-    "Counterfeiting": Counterfeiting,
-    "Drug Offense": Drug_offense,
+    "Total Incidents": allmarkers,
     "Districts": districs
   };
 
@@ -90,30 +98,39 @@ function createMap(markers, Prostitution, Counterfeiting, Drug_offense, districs
 }
 
 d3.json("/leaflet").then(data => {
-  console.log(data);
-  d3.json("/geojson").then(geodata => {
-    console.log(geodata);
-    d3.json("/districts").then(distric => {
-      console.log(distric);
-      var selector = d3.select("#selDataset");
-      // Use the list of sample names to populate the select options
-      d3.json("/names").then((districtNames) => {
-        console.log(districtNames);
-        districtNames.forEach((dstrict) => {
-          selector
+  // console.log(data);
+  // d3.json("/geojson").then(geodata => {
+  d3.json("/districts").then(distric => {
+    // console.log(distric);
+    var selector = d3.select("#selDataset");
+    // Use the list of sample names to populate the select options
+    d3.json("/names").then((districtNames) => {
+      // console.log(districtNames);
+      districtNames.forEach((dstrict) => {
+        selector
+          .append("option")
+          .text(dstrict)
+          .property("value", dstrict);
+      })
+      var selector2 = d3.select("#selDataset2");
+      d3.json("/category_names").then((CategoryNames) => {
+        // console.log(CategoryNames);
+        CategoryNames.forEach((category) => {
+          selector2
             .append("option")
-            .text(dstrict)
-            .property("value", dstrict);
+            .text(category)
+            .property("value", category);
         });
+        createFeatures(data, distric);
       });
-      createFeatures(data, geodata, distric);
     })
   })
 })
 
+var district_layer = L.layerGroup();
 
-function createFeatures(data, geodata, distric) {
-  var markers = L.markerClusterGroup();
+function createFeatures(data, distric) {
+  var allmarkers = L.markerClusterGroup();
 
   function geticon(response) {
     if ("Larceny Theft" === response) {
@@ -154,71 +171,17 @@ function createFeatures(data, geodata, distric) {
 
   var district_array = [];
   district_array["Northern"] = 0; district_array["Park"] = 0; district_array["Ingleside"] = 0; district_array["Southern"] = 0;
-  district_array["Richmond"] = 0; district_array["Mission"] = 0; district_array["Taraval"] = 0; district_array["Tenderloin"] = 0; 
+  district_array["Richmond"] = 0; district_array["Mission"] = 0; district_array["Taraval"] = 0; district_array["Tenderloin"] = 0;
   district_array["Central"] = 0; district_array["Bayview"] = 0;
- 
+
   for (var i = 0; i < data.length; i++) {
     var coord = [data[i].Lat, data[i].Lon];
     var marker = L.marker(coord, { icon: geticon(data[i].Category) })
       .bindPopup("<h3>Category:<strong> " + data[i].Category + " </strong></h3><h4><br>Description: <strong>" + data[i].Description);
-    markers.addLayer(marker);
+    allmarkers.addLayer(marker);
     district_array[data[i].Police_Dist]++;
   }
-  myMap.addLayer(markers);
-
-  var Prostitution = L.geoJson(geodata, {
-    filter: function (feature, layer) {
-      return feature.properties.incident_category == "Prostitution" && feature.properties.incident_year == "2020";
-    },
-    pointToLayer: function (feature, latlng) {
-      return L.marker(latlng, {
-        icon: geticon(feature.properties.incident_category)
-      }).on('mouseover', function () {
-        this.bindPopup(feature.properties.incident_description).openPopup();
-      });
-    }
-  });
-
-  var coord_line = [];
-  var Counterfeiting = L.geoJson(geodata, {
-    filter: function (feature, layer) {
-      return feature.properties.incident_category == "Forgery And Counterfeiting" && feature.properties.incident_year == "2020";
-    },
-    pointToLayer: function (feature, latlng) {
-      return L.marker(latlng, {
-        icon: geticon(feature.properties.incident_category)
-      }).on('mouseover', function () {
-        this.bindPopup(feature.properties.incident_description).openPopup();
-      });
-    },
-    onEachFeature: function (feature, layer) {
-      var coords = feature.geometry.coordinates;
-      var lengthOfCoords = feature.geometry.coordinates.length;
-      let holdLon;
-      holdLon = coords[0];
-      coords[0] = coords[1];
-      coords[1] = holdLon;
-      coord_line.push(coords);
-    }
-  });
-
-  // var offset = L.polyline(coord_line, {
-  //   offset: 5,
-  //   color: "black"
-  // }).addTo(myMap);
-
-  var Drug_offense = L.geoJson(geodata, {
-    filter: function (feature, layer) {
-      return feature.properties.incident_category == "Drug Offense" && feature.properties.incident_year == "2020";
-    },
-    pointToLayer: function (feature, latlng) {
-      return L.marker(latlng, {
-        icon: geticon(feature.properties.incident_category)
-      }).on('mouseover', function () {
-        this.bindPopup(feature.properties.incident_description).openPopup();
-      });
-    }
-  });
+  myMap.addLayer(allmarkers);
 
   var districs = L.geoJson(distric, {
     // Style each feature (in this case a neighborhood)
@@ -254,13 +217,15 @@ function createFeatures(data, geodata, distric) {
       });
       tempCount = district_array[firstLetterUpperCase(feature.properties.district)];
       // Giving each feature a pop-up with information pertinent to it
-      layer.bindPopup("<h2>District: " + feature.properties.district + "</h2><hr><h2>Total Incidents: "+ tempCount);
+      layer.bindPopup("<h2>District: " + feature.properties.district + "</h2><hr><h2>Total Incidents: " + tempCount);
 
     }
   });
-
-  createMap(markers, Prostitution, Counterfeiting, Drug_offense, districs);
+  district_layer.addLayer(districs);
+  createMap(allmarkers, districs);
 }
+
+// myMap.addLayer(district_layer);
 
 L.polygon([
   [37.777228, -122.416272],
@@ -276,19 +241,6 @@ L.polygon([
   hachureGap: 3
 }).bindTooltip('Drug Offense').addTo(myMap);
 
-// L.polygon([
-//   [37.785792, -122.412989],
-//   [37.782977, -122.412431],
-//   [37.782349, -122.417355],
-//   [37.785131, -122.417913]
-// ], {
-//   renderer: L.Canvas.roughCanvas(),
-//   fillColor: 'green',
-//   fillStyle: 'cross-hatch',
-//   fillWeight: 2,
-//   hachureAngle: -10,
-//   hachureGap: 3
-// }).bindTooltip('Counterfeiting money').addTo(myMap);
 
 L.polygon([[
   [37.788217, -122.408397],
@@ -310,11 +262,16 @@ L.polygon([[
 }).bindTooltip('Prostitution').addTo(myMap);
 
 function optionChanged(newSample) {
-  d3.json(`/samples/${newSample}`).then((data) => {
-    console.log(data);
+  myMap.eachLayer(function (layer) {
+    if (layer) {
+      myMap.removeLayer(layer);
+      myMap.addLayer(run_bike_hike);
+      myMap.addLayer(district_layer);
+    }
+  });
 
-    // fmarkers.clearLayers();
-    // myMap.removeLayer(fmarkers);
+  d3.json(`/samples/${newSample}`).then((data) => {
+    // console.log(data);
     var fmarkers = L.markerClusterGroup();
 
     for (var i = 0; i < data.length; i++) {
@@ -328,7 +285,32 @@ function optionChanged(newSample) {
   })
 }
 
-function firstLetterUpperCase (word){
+function optionChanged2(newCategories) {
+  myMap.eachLayer(function (layer) {
+    if (layer) {
+      myMap.removeLayer(layer)
+      myMap.addLayer(run_bike_hike);
+      myMap.addLayer(district_layer);
+    }
+  });
+
+  d3.json(`/categories/${newCategories}`).then((data) => {
+    // console.log(data);
+    var fmarkers = L.markerClusterGroup();
+
+    for (var i = 0; i < data.length; i++) {
+      var coord = [data[i].Lat, data[i].Lon];
+      var marker = L.marker(coord)
+        .bindPopup("<h4>Category:<strong> " + data[i].Category + "</strong><br><h4>Description:" + data[i].Description + "<br><h4>District: " + data[i].Police_Dist);
+      fmarkers.addLayer(marker);
+
+    }
+    myMap.addLayer(fmarkers);
+  })
+}
+
+
+function firstLetterUpperCase(word) {
   temp = word.toLowerCase();
-  return (temp.charAt(0).toUpperCase()+ temp.slice(1)); 
+  return (temp.charAt(0).toUpperCase() + temp.slice(1));
 }

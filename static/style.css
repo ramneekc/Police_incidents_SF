@@ -2,7 +2,7 @@
 body {
   padding: 0;
   margin: 0;
-  background-color: darkslategrey ;
+  background-color: whitesmoke ;
 }
 
 body,
@@ -21,7 +21,7 @@ h4 {
   background-image: url("banner.jpg");
   background-size: cover;
   background-position: center;
-  color: yellow;
+  color: orangered;
   text-align:right;
 }
 
