@@ -78,16 +78,6 @@ function createMap(allmarkers, districs) {
     Emerald: emerald
   };
 
-  // var overlayMaps = {
-  //   "Incidents": markers,
-  //   "Prostitution": Prostitution,
-  //   "Counterfeiting": Counterfeiting,
-  //   "Drug Offense": Drug_offense,
-  //   "Districts": districs,
-  //   "Burglary": Burglary,
-  //   "Vehicle theft": Vehicle_Theft,
-  //   "Missing Person": Missing_Person
-  // };
   var overlayMaps = {
     "Total Incidents": allmarkers,
     "Districts": districs
@@ -131,43 +121,6 @@ var district_layer = L.layerGroup();
 
 function createFeatures(data, distric) {
   var allmarkers = L.markerClusterGroup();
-
-  function geticon(response) {
-    if ("Larceny Theft" === response) {
-      var iconOptions = {
-        iconUrl: 'static/icons/thief_PNG38.png',
-        iconSize: [30, 30]
-      }
-      let customIcon = L.icon(iconOptions);
-      return customIcon
-    }
-    else if ("Other Miscellaneous" === response) {
-      var iconOptions = {
-        iconUrl: 'static/icons/anonymous_mask_PNG2.png',
-        iconSize: [30, 30]
-      }
-      let customIcon = L.icon(iconOptions);
-      return customIcon
-    }
-    else if ("Weapons Offense" === response || "Weapons Carrying Etc" === response) {
-      var iconOptions = {
-        iconUrl: 'static/icons/gangster_PNG77.png',
-        iconSize: [30, 30]
-      }
-      let customIcon = L.icon(iconOptions);
-      return customIcon
-    }
-    else {
-      var iconOptions = {
-        iconUrl: 'static/icons/pin-80.png',
-        iconSize: [30, 30]
-      }
-      let customIcon = L.icon(iconOptions);
-      return customIcon
-    }
-
-
-  }
 
   var district_array = [];
   district_array["Northern"] = 0; district_array["Park"] = 0; district_array["Ingleside"] = 0; district_array["Southern"] = 0;
@@ -227,6 +180,41 @@ function createFeatures(data, distric) {
 
 // myMap.addLayer(district_layer);
 
+function geticon(response) {
+  if ("Robbery" === response) {
+    var iconOptions = {
+      iconUrl: 'static/icons/thief_PNG38.png',
+      iconSize: [30, 30]
+    }
+    let customIcon = L.icon(iconOptions);
+    return customIcon
+  }
+  else if ("Motor Vehicle Theft" === response) {
+    var iconOptions = {
+      iconUrl: 'static/icons/anonymous_mask_PNG2.png',
+      iconSize: [30, 30]
+    }
+    let customIcon = L.icon(iconOptions);
+    return customIcon
+  }
+  else if ("Weapons Offense" === response || "Weapons Carrying Etc" === response) {
+    var iconOptions = {
+      iconUrl: 'static/icons/gangster_PNG77.png',
+      iconSize: [30, 30]
+    }
+    let customIcon = L.icon(iconOptions);
+    return customIcon
+  }
+  else {
+    var iconOptions = {
+      iconUrl: 'static/icons/pin-80.png',
+      iconSize: [30, 30]
+    }
+    let customIcon = L.icon(iconOptions);
+    return customIcon
+  }
+}
+
 L.polygon([
   [37.777228, -122.416272],
   [37.786046, -122.418722],
@@ -277,7 +265,7 @@ function optionChanged(newSample) {
     for (var i = 0; i < data.length; i++) {
       var coord = [data[i].Lat, data[i].Lon];
       var marker = L.marker(coord)
-        .bindPopup("<h4>Category:<strong> " + data[i].Category + "</strong><br><h4>Description:" + data[i].Description + "<br><h4>District: " + data[i].Police_Dist);
+        .bindPopup("<h4>Category:<strong> " + data[i].Category + "</strong><br><h4>Description:" + data[i].Description + "<br><h4>District: " + data[i].Police_Dist + "<br><h4>Incident time: " + data[i].Time);
       fmarkers.addLayer(marker);
 
     }
@@ -290,7 +278,7 @@ function optionChanged2(newCategories) {
     if (layer) {
       myMap.removeLayer(layer)
       myMap.addLayer(run_bike_hike);
-      myMap.addLayer(district_layer);
+      // myMap.addLayer(district_layer);
     }
   });
 
@@ -300,8 +288,8 @@ function optionChanged2(newCategories) {
 
     for (var i = 0; i < data.length; i++) {
       var coord = [data[i].Lat, data[i].Lon];
-      var marker = L.marker(coord)
-        .bindPopup("<h4>Category:<strong> " + data[i].Category + "</strong><br><h4>Description:" + data[i].Description + "<br><h4>District: " + data[i].Police_Dist);
+      var marker = L.marker(coord, { icon: geticon(data[i].Category) })
+        .bindPopup("<h4>Category:<strong> " + data[i].Category + "</strong><br><h4>Description:" + data[i].Description + "<br><h4>District: " + data[i].Police_Dist+ "<br><h4>Incident time: " + data[i].Time);
       fmarkers.addLayer(marker);
 
     }
