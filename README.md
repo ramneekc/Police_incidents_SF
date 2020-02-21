@@ -1,14 +1,14 @@
-#SF Crime Incidents
+# SF Crime Incidents
 
 Analysed datasf.gov dataset to pull information on crimes by district. 
 
-#The Issue
+# The Issue
 
 San Francisco is one of top tourist attactions in world but like many major cities it has its own challenges with crime.  
 
 For this reason, we decided to do this project to help increase awareness about the safety of San Francisco neighborhoods.
 
-#Conclusion
+# Conclusion
 
 · Violent crimes are concentrated in limited areas, mostly not near the tourist areas.
 
@@ -18,5 +18,7 @@ For this reason, we decided to do this project to help increase awareness about 
 
 · San Francisco is not particularly dangerous when compared with other cities.
 
-#Technologies used 
+# Technologies used 
+```
 Javascript, HTML, CSS, D3.js, Flask, mongoDB
+```
