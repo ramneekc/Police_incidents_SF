@@ -264,7 +264,8 @@ function optionChanged(newSample) {
 
     // let unique = [...new Set(data.map(item => item.Category))];  
     // console.log(unique);
-    var incident_count = {};    
+    var incident_count = {};
+    var weekday_count = {};
 
     for (var i = 0; i < data.length; i++) {
       var coord = [data[i].Lat, data[i].Lon];
@@ -272,72 +273,147 @@ function optionChanged(newSample) {
         .bindPopup("<h4>Category:<strong> " + data[i].Category + "</strong><br><h4>Description:" + data[i].Description + "<br><h4>District: " + data[i].Police_Dist + "<br><h4>Incident time: " + data[i].Time);
       fmarkers.addLayer(marker);
       incident_count[data[i].Category] = (incident_count[data[i].Category] || 0) + 1;
+      weekday_count[data[i].Week] = (weekday_count[data[i].Week] || 0) + 1;
     }
     // console.log(incident_count);
-    var sorted_incident_counts = Object.keys(incident_count).map(function(key) {
+    console.log(weekday_count['Monday']);
+
+    var sorted_incident_counts = Object.keys(incident_count).map(function (key) {
       return [key, incident_count[key]];
     });
     // Sort the array based on the second element
-    sorted_incident_counts.sort(function(first, second) {
+    sorted_incident_counts.sort(function (first, second) {
       return second[1] - first[1];
     });
-    console.log(sorted_incident_counts.slice(0,8));
-    
-  myMap.addLayer(fmarkers);
-  Highcharts.chart('container2', {
-    chart: {
-      type: 'variablepie'
-    },
-    title: {
-      text: `Top 8 Incidents in ${data[0].Police_Dist} District`
-    },
-    tooltip: {
-      headerFormat: '',
-      pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
-        // 'Area (square km): <b>{point.y}</b><br/>' +
-        'COUNT: <b>{point.z}</b><br/>'
-    },
-    series: [{
-      minPointSize: 10,
-      innerSize: '20%',
-      zMin: 0,
-      name: 'countries',
-      data: [{
-        name: sorted_incident_counts[0][0],
-        y: sorted_incident_counts[0][1],
-        z: sorted_incident_counts[0][1]
-      }, {
-        name: sorted_incident_counts[1][0],
-        y: sorted_incident_counts[1][1],
-        z: sorted_incident_counts[1][1]
-      }, {
-        name: sorted_incident_counts[2][0],
-        y: sorted_incident_counts[2][1],
-        z: sorted_incident_counts[2][1]
-      }, {
-        name: sorted_incident_counts[3][0],
-        y: sorted_incident_counts[3][1],
-        z: sorted_incident_counts[3][1]
-      }, {
-        name: sorted_incident_counts[4][0],
-        y: sorted_incident_counts[4][1],
-        z: sorted_incident_counts[4][1]
-      }, {
-        name: sorted_incident_counts[5][0],
-        y: sorted_incident_counts[5][1],
-        z: sorted_incident_counts[5][1]
-      }, {
-        name: sorted_incident_counts[6][0],
-        y: sorted_incident_counts[6][1],
-        z: sorted_incident_counts[6][1]
-      },{
-        name: sorted_incident_counts[7][0],
-        y: sorted_incident_counts[7][1],
-        z: sorted_incident_counts[7][1]
+    // console.log(sorted_incident_counts.slice(0, 8));
+
+    myMap.addLayer(fmarkers);
+
+    Highcharts.chart('container2', {
+      chart: {
+        type: 'variablepie'
+      },
+      title: {
+        text: `Top 8 Incidents in ${data[0].Police_Dist} District`
+      },
+      tooltip: {
+        headerFormat: '',
+        pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
+          // 'Area (square km): <b>{point.y}</b><br/>' +
+          'COUNT: <b>{point.z}</b><br/>'
+      },
+      series: [{
+        minPointSize: 10,
+        innerSize: '20%',
+        zMin: 0,
+        name: 'incidents',
+        data: [{
+          name: sorted_incident_counts[0][0],
+          y: sorted_incident_counts[0][1],
+          z: sorted_incident_counts[0][1]
+        }, {
+          name: sorted_incident_counts[1][0],
+          y: sorted_incident_counts[1][1],
+          z: sorted_incident_counts[1][1]
+        }, {
+          name: sorted_incident_counts[2][0],
+          y: sorted_incident_counts[2][1],
+          z: sorted_incident_counts[2][1]
+        }, {
+          name: sorted_incident_counts[3][0],
+          y: sorted_incident_counts[3][1],
+          z: sorted_incident_counts[3][1]
+        }, {
+          name: sorted_incident_counts[4][0],
+          y: sorted_incident_counts[4][1],
+          z: sorted_incident_counts[4][1]
+        }, {
+          name: sorted_incident_counts[5][0],
+          y: sorted_incident_counts[5][1],
+          z: sorted_incident_counts[5][1]
+        }, {
+          name: sorted_incident_counts[6][0],
+          y: sorted_incident_counts[6][1],
+          z: sorted_incident_counts[6][1]
+        }, {
+          name: sorted_incident_counts[7][0],
+          y: sorted_incident_counts[7][1],
+          z: sorted_incident_counts[7][1]
+        }]
       }]
-    }]
-  });
-})
+    });
+
+    Highcharts.chart('container3', {
+      chart: {
+        type: 'packedbubble',
+        height: '80%'
+      },
+      title: {
+        text: `Number of incidents per weekday in ${data[0].Police_Dist} District`
+      },
+      tooltip: {
+        useHTML: true,
+        pointFormat: '<b>{point.y}</b></sub>'
+      },
+      plotOptions: {
+        packedbubble: {
+          dataLabels: {
+            enabled: true,
+            format: '{point.name}',
+            style: {
+              color: 'black',
+              textOutline: 'none',
+              fontWeight: 'normal'
+            }
+          },
+          minPointSize: 5
+        }
+      },
+      series: [{
+        name: 'Monday',
+        data: [{
+          value: weekday_count['Monday'],
+          name: 'Monday'
+        }]
+      }, {
+        name: 'Tuesday',
+        data: [{
+          value: weekday_count['Tuesday'],
+          name: 'Tuesday'
+        }]
+      }, {
+        name: 'Wednesday',
+        data: [{
+          value: weekday_count['Wednesday'],
+          name: 'Wednesday'
+        }]
+      }, {
+        name: 'Thursday',
+        data: [{
+          value: weekday_count['Thursday'],
+          name: 'Thursday'
+        }]
+      }, {
+        name: 'Friday',
+        data: [{
+          value: weekday_count['Friday'],
+          name: 'Friday'
+        }]
+      }, {
+        name: 'Saturday',
+        data: [{
+          value: weekday_count['Saturday'],
+          name: 'Saturday'
+        }]
+      }, {
+        name: 'Sunday',
+        data: [{
+          value: weekday_count['Sunday'],
+          name: 'Sunday'
+        }]
+      }]
+    });
+  })
 }
 
 function optionChanged2(newCategories) {
