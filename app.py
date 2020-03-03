@@ -32,13 +32,6 @@ def search():
     df1 = df['Police_Dist'].unique()
     return jsonify(list(df1))
 
-# @app.route('/geojson')
-# def geojson():
-#     link  = "static/Police_Department_Incident_Reports_ 2018_to_Present.geojson"
-#     with open(link) as json_file:
-#         data1 = json.load(json_file)
-#     return data1
-
 @app.route('/districts')
 def districts():
     link  = "static/Current_Police_Districts.geojson"
