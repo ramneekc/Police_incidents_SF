@@ -3,9 +3,89 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Police incidents</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-  <!-- Leaflet CSS & JS -->
+  <title>Police incident reports</title>
+
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700,900' rel='stylesheet' type='text/css'>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Techie Bootstrap 3 skin">
+  <meta name="keywords" content="bootstrap 3, skin, flat">
+  <meta name="author" content="bootstraptaste">
+
+  <!-- Bootstrap css -->
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/bootstrap.techie.css" rel="stylesheet">
+
+  <!-- =======================================================
+    Theme Name: Techie
+    Theme URL: https://bootstrapmade.com/techie-free-skin-bootstrap-3/
+    Author: BootstrapMade
+    Author URL: https://bootstrapmade.com
+  ======================================================= -->
+
+  <!-- Docs Custom styles -->
+  <style>
+    body,
+    html {
+      overflow-x: hidden
+    }
+
+    body {
+      padding: 60px 20px 0
+    }
+
+    footer {
+      border-top: 1px solid #ddd;
+      padding: 30px;
+      margin-top: 50px
+    }
+
+    .row>[class*=col-] {
+      margin-bottom: 40px
+    }
+
+    .navbar-container {
+      position: relative;
+      min-height: 100px
+    }
+
+    .navbar.navbar-fixed-bottom,
+    .navbar.navbar-fixed-top {
+      position: absolute;
+      top: 50px;
+      z-index: 0
+    }
+
+    .navbar.navbar-fixed-bottom .container,
+    .navbar.navbar-fixed-top .container {
+      max-width: 90%
+    }
+
+    .btn-group {
+      margin-bottom: 10px
+    }
+
+    .form-inline input[type=password],
+    .form-inline input[type=text],
+    .form-inline select {
+      width: 180px
+    }
+
+    .input-group {
+      margin-bottom: 10px
+    }
+
+    .pagination {
+      margin-top: 0
+    }
+
+    .navbar-inverse {
+      margin: 110px 0
+    }
+  </style>
+  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
     integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
     crossorigin="" />
@@ -37,46 +117,142 @@
 </head>
 
 <body>
-  <div class="container-fluid">
+
+  <div class="container" style="width: fit-content; margin-left: 10%; margin-right: 10%;">
+    <div class="jumbotron">
+      <h1 class="text-right">Police incident reports</h1>
+    </div>
+
     <div class="row">
-      <div class="col-md-12 jumbotron text-center">
-        <h1>Police incident reports</h1>
+      <div class="col-sm-6 col-lg-6 text-justify" data-effect="slide-left">
+        <h3>THE ISSUE</h3>
+        <p><mark>San Francisco</mark> is one of top tourist attractions in world but like many major cities it has its own challenges with crime.
+        <p><b>For this reason, we decided to do this project to help increase awareness about the safety of San Francisco neighborhoods.</b></p>
+      </div>
+      <div class="col-sm-6 col-lg-6 text-justify" data-effect="slide-right">
+        <h3>CONCLUSION</h3>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">More than <b>12000</b> incidents were logged in just <b>40</b> days period.</li>
+          <li class="list-group-item"><b>Violent crimes</b> are concentrated in limited areas, mostly not near the tourist areas.</li>
+          <li class="list-group-item">Based on our findings <b>Tendorloin</b> district has the most # of crimes compared to other districts.</li>
+          <li class="list-group-item">Crimes most likely to affect tourists are the <b>car break-ins and theft</b>. </li>
+          <li class="list-group-item">High number of crimes seems to occur on <b>Wednesday, Thursday and Friday</b> and <b>Sunday</b> is safest day overall.</li>
+        </ul>
       </div>
     </div>
+
     <div class="row">
-      <div class="col-md-2">
-        <div class="well btn-group">
-          <strong><h4>SELECT DISTRICT: </h4></strong>
-          <select id="selDataset" class="btn btn-warning btn-lg dropdown-toggle" onchange="optionChanged(this.value)"></select>
+      <!-- Navbar -->
+
+      <div class="col-sm-12 col-lg-6">
+
+        <div class="panel panel-primary" id="panels" data-effect="helix">
+
+          <div class="panel-body">
+            <nav class="navbar navbar-centre" role="navigation">
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+                <ul class="nav navbar-nav navbar-left">
+                  <li class="dropdown">
+                    <a><b>SELECT DISTRICT</b>
+                      <select id="selDataset" class="btn btn-warning btn-lg dropdown-toggle"
+                        onchange="optionChanged(this.value)"></select></a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /.navbar-collapse -->
+            </nav>
+            <p><i>Select district layer on the map and click a district to see total incidents and see the charts below for detail for each district. </i></p>
+            <p><mark><b>Resize window if map is cut off</b></mark></p>
+          </div>
         </div>
-      <div class="well btn-group">
-        <strong><h4>SELECT CATEGORY: </h4></strong>
-        <select id="selDataset2" class="btn btn-warning btn-lg dropdown-toggle" onchange="optionChanged2(this.value)"></select>
       </div>
-      </div>
-      <div class="col-md-6">
-        <div id="map1"></div>
-      </div>
-      <div class="col-md-4">
-        <figure class="highcharts-figure">
-          <div id="container2"></div>
-        </figure>
+
+      <div class="col-sm-12 col-lg-6">
+        <div class="panel panel-primary" id="panels" data-effect="helix">
+          <div class="panel-body">
+            <nav class="navbar navbar-centre" role="navigation">
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+                <ul class="nav navbar-nav navbar-left">
+                  <li class="dropdown">
+                    <a><b>SELECT INCIDENTS</b>
+                      <select id="selDataset2" class="btn btn-warning btn-lg dropdown-toggle"
+                        onchange="optionChanged2(this.value)"></select></a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /.navbar-collapse -->
+            </nav>
+            <p><i>This gives you location of each incident happened in Jan/2020 to Feb/2020.Clicking on each marker gives you addtional information.</i></p>
+            <p><mark><b>Black shaded area</b> - High Drug incidents, <b>Blue shaded area</b> - Prostitution incidents</mark></p>
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="row">
-      <div class="col-md-12">
-        <figure class="highcharts-figure">
-          <div id="container3"></div>
-        </figure>
+      <!-- Navbar -->
+      <div class="col-sm-12 col-lg-12">
+        <div class="panel panel-primary" id="panels" data-effect="helix">
+          <div class="panel-body">
+            <div class="col-lg-12 col-sm-12 ">
+              <div id="map1"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div class="panel panel-primary" id="panels" data-effect="helix">
+          <div class="panel-body">
+            
+            <div class="col-lg-6 col-sm-6 ">
+              <figure class="highcharts-figure">
+                <div id="container2"></div>
+              </figure>
+            </div>
+
+            <div class="col-lg-6 col-sm-6 ">
+              <figure class="highcharts-figure">
+                <div id="container3"></div>
+              </figure>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
   </div>
+  <!-- /container -->
+  <footer class="text-center">
+    <p>&copy; Police incident reports</p>
+    <div class="credits">
+      <!--
+        All the links in the footer should remain intact.
+        You can delete the links only if you purchased the pro version.
+        Licensing information: https://bootstrapmade.com/license/
+        Purchase the pro version form: https://bootstrapmade.com/buy/?theme=Techie
+      -->
+      Project by <b>Ramneek</b>, <b>Jo</b>
+    </div>
+  </footer>
 
-
+  <!-- Main Scripts-->
+  <script src="assets/js/jquery.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
   <!-- API key -->
   <script type="text/javascript" src="static/config.js"></script>
   <!-- Our JS -->
   <script type="text/javascript" src="static/app.js"></script>
+
+
 </body>
 
 </html>

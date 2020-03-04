@@ -83,7 +83,9 @@ function createMap(allmarkers, districs) {
     "Districts": districs
   };
 
-  L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+  L.control.layers(baseMaps, overlayMaps,{
+    collapsed: false
+  }).addTo(myMap);
 
 }
 
@@ -121,7 +123,8 @@ var district_layer = L.layerGroup();
 
 function createFeatures(data, distric) {
   var allmarkers = L.markerClusterGroup();
-
+  var incident_count = {};
+  var weekday_count = {};
   var district_array = [];
   district_array["Northern"] = 0; district_array["Park"] = 0; district_array["Ingleside"] = 0; district_array["Southern"] = 0;
   district_array["Richmond"] = 0; district_array["Mission"] = 0; district_array["Taraval"] = 0; district_array["Tenderloin"] = 0;
@@ -133,8 +136,20 @@ function createFeatures(data, distric) {
       .bindPopup("<h3>Category:<strong> " + data[i].Category + " </strong></h3><h4><br>Description: <strong>" + data[i].Description);
     allmarkers.addLayer(marker);
     district_array[data[i].Police_Dist]++;
+    incident_count[data[i].Category] = (incident_count[data[i].Category] || 0) + 1;
+    weekday_count[data[i].Week] = (weekday_count[data[i].Week] || 0) + 1;
   }
   myMap.addLayer(allmarkers);
+
+  var sorted_incident_counts = Object.keys(incident_count).map(function (key) {
+    return [key, incident_count[key]];
+  });
+  // Sort the array based on the second element
+  sorted_incident_counts.sort(function (first, second) {
+    return second[1] - first[1];
+  });
+  // console.log(incident_count);
+  // console.log(weekday_count);
 
   var districs = L.geoJson(distric, {
     // Style each feature (in this case a neighborhood)
@@ -175,6 +190,131 @@ function createFeatures(data, distric) {
     }
   });
   district_layer.addLayer(districs);
+
+  Highcharts.chart('container2', {
+    chart: {
+      type: 'variablepie'
+    },
+    title: {
+      text: `Top 8 Incidents in San Francisco`
+    },
+    tooltip: {
+      headerFormat: '',
+      pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
+        'COUNT: <b>{point.z}</b><br/>'
+    },
+    series: [{
+      minPointSize: 10,
+      innerSize: '20%',
+      zMin: 0,
+      name: 'incidents',
+      data: [{
+        name: sorted_incident_counts[0][0],
+        y: sorted_incident_counts[0][1],
+        z: sorted_incident_counts[0][1]
+      }, {
+        name: sorted_incident_counts[1][0],
+        y: sorted_incident_counts[1][1],
+        z: sorted_incident_counts[1][1]
+      }, {
+        name: sorted_incident_counts[2][0],
+        y: sorted_incident_counts[2][1],
+        z: sorted_incident_counts[2][1]
+      }, {
+        name: sorted_incident_counts[3][0],
+        y: sorted_incident_counts[3][1],
+        z: sorted_incident_counts[3][1]
+      }, {
+        name: sorted_incident_counts[4][0],
+        y: sorted_incident_counts[4][1],
+        z: sorted_incident_counts[4][1]
+      }, {
+        name: sorted_incident_counts[5][0],
+        y: sorted_incident_counts[5][1],
+        z: sorted_incident_counts[5][1]
+      }, {
+        name: sorted_incident_counts[6][0],
+        y: sorted_incident_counts[6][1],
+        z: sorted_incident_counts[6][1]
+      }, {
+        name: sorted_incident_counts[7][0],
+        y: sorted_incident_counts[7][1],
+        z: sorted_incident_counts[7][1]
+      }]
+    }]
+  });
+
+  Highcharts.chart('container3', {
+    chart: {
+      type: 'packedbubble',
+      height: '80%'
+    },
+    title: {
+      text: `Total number of incidents per weekday`
+    },
+    tooltip: {
+      useHTML: true,
+      pointFormat: '<b>{point.y}</b></sub>'
+    },
+    plotOptions: {
+      packedbubble: {
+        dataLabels: {
+          enabled: true,
+          format: '{point.name}',
+          style: {
+            color: 'black',
+            textOutline: 'none',
+            fontWeight: 'normal'
+          }
+        },
+        minPointSize: 5
+      }
+    },
+    series: [{
+      name: 'Monday',
+      data: [{
+        value: weekday_count['Monday'],
+        name: 'Monday'
+      }]
+    }, {
+      name: 'Tuesday',
+      data: [{
+        value: weekday_count['Tuesday'],
+        name: 'Tuesday'
+      }]
+    }, {
+      name: 'Wednesday',
+      data: [{
+        value: weekday_count['Wednesday'],
+        name: 'Wednesday'
+      }]
+    }, {
+      name: 'Thursday',
+      data: [{
+        value: weekday_count['Thursday'],
+        name: 'Thursday'
+      }]
+    }, {
+      name: 'Friday',
+      data: [{
+        value: weekday_count['Friday'],
+        name: 'Friday'
+      }]
+    }, {
+      name: 'Saturday',
+      data: [{
+        value: weekday_count['Saturday'],
+        name: 'Saturday'
+      }]
+    }, {
+      name: 'Sunday',
+      data: [{
+        value: weekday_count['Sunday'],
+        name: 'Sunday'
+      }]
+    }]
+  });
+
   createMap(allmarkers, districs);
 }
 
