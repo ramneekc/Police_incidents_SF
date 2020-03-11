@@ -22,3 +22,24 @@ For this reason, we decided to do this project to help increase awareness about 
 ```
 Javascript, HTML, CSS, D3.js, Flask, mongoDB
 ```
+# Live Project
+```
+https://incident-reports.herokuapp.com/
+```
+# Screenshots
+```
+You can filter incidents either by districts or see them individually from incident dropdown.
+```
+![](static/Screenshots/Screenshot%20(56).png)
+```
+This shows all the incidents when you load the page with districts categorized by colors.
+```
+![](static/Screenshots/Screenshot%20(57).png)
+```
+Clicking on each district gives you total number of incidents for that district.
+```
+![](static/Screenshots/Screenshot%20(58).png)
+```
+Choosing the filter district gives additional info like count of top incidents and incidents per weekday.
+```
+![](static/Screenshots/Screenshot%20(59).png)
