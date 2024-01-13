@@ -10,13 +10,13 @@ For this reason, we decided to do this project to help increase awareness about 
 
 # Conclusion
 
-· Violent crimes are concentrated in limited areas, mostly not near the tourist areas.
-
-· Based on our findings Tendorloin district had the most # of crimes compared to other districts. 
-
-· Crimes most likely to affect tourists are the car break-ins and theft (somewhat preventable).
-
-· San Francisco is not particularly dangerous when compared with other cities.
+- Conducted an in-depth analysis of San Francisco's crime data, focusing on district-wise crime incidents, leveraging the datasf.gov dataset.
+- Aimed to enhance public awareness regarding the safety of San Francisco neighborhoods, particularly for tourists.
+- Discovered that violent crimes were predominantly localized in certain areas, mostly away from tourist spots.
+- Identified the Tenderloin district as having the highest number of crimes, significantly higher than other districts.
+- Highlighted car break-ins and theft as the crimes most likely to affect tourists, suggesting potential preventive measures.
+- Concluded that San Francisco's overall safety is comparable to other major cities, debunking misconceptions about its danger level.
+- Utilized a blend of web and data technologies, including JavaScript, D3.js for data visualization, Flask for the backend, and MongoDB for data storage.
 
 # Technologies used 
 ```
